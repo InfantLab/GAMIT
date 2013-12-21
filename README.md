@@ -9,8 +9,11 @@ The GAMIT model it generates a set of retrospective or prospective time estimate
 
 Example function calls are documented in the attached word document.
 
+
 Theory: Caspar Addyman, Robert M. French, Denis Mareschal, Elizabeth Thomas
+
 Model: Robert M. French, Caspar Addyman
+
 Code: Caspar Addyman
 
 Contact:
