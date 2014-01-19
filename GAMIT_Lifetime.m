@@ -1,4 +1,4 @@
-function ReferenceCurve = GAMIT_Lifetime(params, N, showGraphics)
+function ReferenceCurve = GAMIT_Lifetime(params, N, showGraphics, exportRawData)
 %
 % generates an average lifetime activation curve. Has default values but
 % accepts overrides
@@ -12,6 +12,9 @@ end
 if nargin < 3
     showGraphics = false;
 end 
+if nargin < 4
+    exportRawData = true;
+end
 %initialise storage
 gamitScore =zeros(N,params.nIterations); 
 scoreDelta =zeros(N,params.nIterations); 
@@ -74,6 +77,14 @@ ReferenceCurve.GamitScore = mean(gamitScore,1);
 ReferenceCurve.GamitScoreUncertainty = std(gamitScore, 1);
 ReferenceCurve.Delta = mean(scoreDelta,1); 
 
+if exportRawData
+    Score = ReferenceCurve.GamitScore';
+    ScoreUncertainty = ReferenceCurve.GamitScoreUncertainty';
+    Delta = ReferenceCurve.Delta';
+    t = table(Score,ScoreUncertainty,Delta);
+    writetable(t,'GAMIT_Lifetime.csv','Delimiter',',');
+    save('GAMIT_Lifetime_Params.mat','params');
+end
 
 
 if showGraphics

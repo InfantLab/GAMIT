@@ -1,4 +1,4 @@
-function GAMIT_Weber_Demo(targetTime, nSamples, prospectiveFlag,method)
+function GAMIT_Weber_Demo(targetTime, nSamples, prospectiveFlag,method,exportRawData)
 %
 % Demonstrate that time estimates in the GAMIT model have the scalar
 % property. 
@@ -8,6 +8,7 @@ function GAMIT_Weber_Demo(targetTime, nSamples, prospectiveFlag,method)
 %   prospectiveFlag = 0,false [Retrospective], 1,true [Prospective]
 %   method          = 0,'hist' compare targetTime and 1.5*targetTime as histograms
 %                     1,'bars' compare targetTime & 0.2:0.2:2 * targetTime as estimates & errorbars
+%   exportRawData   = 0,1,true,false, save 
 
 if nargin<1
     targetTime = 800;
@@ -20,6 +21,9 @@ if nargin<3
 end 
 if nargin<4 
     method = 0;
+end
+if nargin<5
+    exportRawData = false;
 end
 
 if prospectiveFlag 
@@ -65,6 +69,13 @@ if method == 0 || strcmpi(method,'hist') %webers law as histograms.
     subplot(1,2,2);
     bar(x,[n' n2']);
     title(['Scaled histograms of estimates - ' pro_or_ret]);
+    
+    if exportRawData
+        t = table(retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh);
+        writetable(t,'GAMIT_Weber_Demo.csv','Delimiter',',');
+        save('GAMIT_Weber_Params.mat','params');
+    end
+        
 else %webers law as error bars. 
     multipliers = [0.2:0.2:2];
     nSteps = length(multipliers);
