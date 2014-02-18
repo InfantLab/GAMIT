@@ -17,7 +17,7 @@ else
     params.beta = 0.14952;          % spreading activation
     params.noiseFactor = 0.00025;  % noise
 
-    params.GaussianFit = 0;      %is gamit score the stddev of the best fit gaussian 
+    params.GaussianFit = 1;      %is gamit score the stddev of the best fit gaussian 
                                      %or is it SummedActivation + MaxActivation?
 
     %curve sampling params
@@ -30,7 +30,11 @@ else
     params.RandomAccessMemory = 0; %If WMD=true, is the subset random or just the most recent deltas
     params.nSampleDeltas = 6;       % how many samples can we keep in memory?
 
-    params.sampleFrequency = 50;    % base rate of one sample every fifty ticks
+    params.sampleFrequency = 100;    % base rate of one sample every fifty ticks
     params.PoissonSampling = 1;  % are time points samples according to a Poisson process or uniform random variable
 
+    params.NeuralNetwork = 1;       %Do we use a neural net model of lifetime learning?
+    params.RecurrentNetwork = 1;    %0 backprop, 1 simple recurrent network (SRN)
+    params.ProbProspective = 0.2;   %what proportion of learning examples are prospective timing?
+    
 end

@@ -32,9 +32,17 @@ else
     pro_or_ret = 'Retrospective';
 end
 
-%step 1: Get default params & generate a reference curve
+NET = true;
+
+%step 1: Get default params 
 params = GAMIT_Params();
-lifetimeCurve = GAMIT_Lifetime(params);
+if NET
+    %train the network
+    [wt1, wt2] = GAMIT_Learning(params);
+else
+    %generate a reference curve
+    lifetimeCurve = GAMIT_Lifetime(params);
+end
 
 %now generate window for the figure
 scrsz = get(0,'ScreenSize');
@@ -43,12 +51,16 @@ figure('Position',[1 0.5*scrsz(4) 0.75*scrsz(3), 0.5*scrsz(4)]);
 if method == 0 || strcmpi(method,'hist') %webers law as histograms. 
     %step 2 - generate lots of estimates
     targetArray = targetTime * ones(1,nSamples);
-    intervalEstimates = GAMIT(targetArray,1.0,prospectiveFlag,false,params,lifetimeCurve);
-
     %step 3 - generate comparison of estimates
     targetArray2 = 1.5 * targetTime * ones(1,nSamples);
-    intervalEstimates2 = GAMIT(targetArray2,1.0,prospectiveFlag,false,params,lifetimeCurve);
 
+    if NET
+        intervalEstimates = GAMIT_NET(targetArray,1.0,prospectiveFlag,false,params,wt1, wt2);
+        intervalEstimates2 = GAMIT_NET(targetArray2,1.0,prospectiveFlag,false,params,wt1, wt2);
+    else
+        intervalEstimates = GAMIT(targetArray,1.0,prospectiveFlag,false,params,lifetimeCurve);
+        intervalEstimates2 = GAMIT(targetArray2,1.0,prospectiveFlag,false,params,lifetimeCurve);
+    end
 
     %webers law as histograms. 
     subplot(1,2,1);
@@ -81,7 +93,11 @@ else %webers law as error bars.
     nSteps = length(multipliers);
     targetArray = targetTime * ones(1,nSamples);
     for i = 1:nSteps
-        intervalEstimates(i,:) = GAMIT(multipliers(i)*targetArray,1.0,prospectiveFlag,false,params,lifetimeCurve);
+        if NET
+            intervalEstimates(i,:) = GAMIT_NET(multipliers(i)*targetArray,1.0,prospectiveFlag,false,params,wt1, wt2);
+        else
+            intervalEstimates(i,:) = GAMIT(multipliers(i)*targetArray,1.0,prospectiveFlag,false,params,lifetimeCurve);
+        end
     end
     
     %left hand panel

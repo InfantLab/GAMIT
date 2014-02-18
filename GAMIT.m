@@ -57,10 +57,10 @@ timeEstimates = zeros(n,1);
 PHI = ones(n,1);
 for i = 1:n
     %first get a spreading activation curve for these settings
-    [thisCurve, ~] = GAMIT_Spreading_Activation(params);
+    [thisActivation, ~] = GAMIT_Spreading_Activation(params);
     
     %what is value of this curve at target time?
-    rawActivation = thisCurve(round(targetTimes(i)));
+    rawActivation = thisActivation(round(targetTimes(i)));
     %APPLY SAMPLING NOISING TO THIS VALUE
     if params.GaussianFit
         %adjust activation by proportional random error 
@@ -99,9 +99,9 @@ for i = 1:n
        end
        %corresponding deltas 
        if params.GaussianFit
-           sampleDeltas = diff(thisCurve([1 sampleTimes]));
+           sampleDeltas = diff(thisActivation([1 sampleTimes]));
        else
-           sampleDeltas = -1*diff(thisCurve([1 sampleTimes]));
+           sampleDeltas = -1*diff(thisActivation([1 sampleTimes]));
        end
        %don't allow negatives
        sampleDeltas(sampleDeltas<=0)=0;
