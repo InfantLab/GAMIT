@@ -12,7 +12,7 @@ Example function calls are documented in the attached word document.
 
 Theory: Caspar Addyman, Robert M. French, Denis Mareschal, Elizabeth Thomas
 
-Model: Robert M. French, Caspar Addyman
+Model: Caspar Addyman, Robert M. French
 
 Code: Caspar Addyman
 
