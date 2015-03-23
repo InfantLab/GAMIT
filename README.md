@@ -28,3 +28,7 @@ Addyman, C., & Mareschal, D. (2014). GAMIT-Net: Retrospective and prospective in
 
 Code DOI
 [![DOI](https://zenodo.org/badge/3891/YourBrain/GAMIT.svg)](http://dx.doi.org/10.5281/zenodo.9895)
+
+
+This work was supported in part by a joint grant from the French ANR (ANR-10-056 GETPIMA), and the UK ESRC (RES-062-23-0819) within the France-UK ORA framework.
+
