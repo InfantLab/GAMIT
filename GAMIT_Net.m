@@ -60,24 +60,28 @@ for i = 1:n
     %always start with initial value
     INS = thisCurve(1,:);
     if reproduceFlag
-       %interval reproduction task
-       %basically our model check it's watch at random intervals until it's
-       %estimate is greater than or equal to the target time. At which
-       %point it stops. we then return the actual amount of elapsed time to
-       %get to this point.
-       % as a first step, generate far more saccades than we might actually
-       % need 
-       %(targetinterval * 3) should be big enough!
-       sampleTimes = getRandomSampleTimes(3*targetTimes(i),params.PoissonSampling,params.sampleFrequency);
-       
-       INS = [INS; thisCurve(sampleTimes,:)]; %inputs to the neural network are curve values at these times
-       OUTPUTS = srn_out(INS, wt1, wt2); %outputs are network estimates
-       %now have to convert these outputs to actual numerical values
-       allEstimates = LinearRepresentation(OUTPUTS,20,1,params.nIterations,true);  
-       %Finally find the first estimate greater than the target
-       ix = find(allEstimates>targetTimes(i),1);
-       %the actual estimate is the 'real' time that produced this estimate
-       timeEstimates(i) = sampleTimes(ix);  
+       if prospectiveFlag
+           %interval reproduction task
+           %basically our model check it's watch at random intervals until it's
+           %estimate is greater than or equal to the target time. At which
+           %point it stops. we then return the actual amount of elapsed time to
+           %get to this point.
+           % as a first step, generate far more saccades than we might actually
+           % need 
+           %(targetinterval * 3) should be big enough!
+           sampleTimes = getRandomSampleTimes(3*targetTimes(i),params.PoissonSampling,params.sampleFrequency);
+
+           INS = [INS; thisCurve(sampleTimes,:)]; %inputs to the neural network are curve values at these times
+           OUTPUTS = srn_out(INS, wt1, wt2); %outputs are network estimates
+           %now have to convert these outputs to actual numerical values
+           allEstimates = LinearRepresentation(OUTPUTS,20,1,params.nIterations,true);  
+           %Finally find the first estimate greater than the target
+           ix = find(allEstimates>targetTimes(i),1);
+           %the actual estimate is the 'real' time that produced this estimate
+           timeEstimates(i) = sampleTimes(ix);  
+       else
+           error('Cannot have a retrospective reproduction task.');
+       end
     else
        %standard recognition task.
        if prospectiveFlag
