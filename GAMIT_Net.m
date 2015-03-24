@@ -22,7 +22,7 @@ end
 if nargin < 3
     prospectiveFlag = false; %retrospective 
 end
-if nargin < 4 %NOT IMPLEMENTED (YET)
+if nargin < 4 %
     reproduceFlag = false; %recognition task
 end 
 if nargin < 5
@@ -55,29 +55,57 @@ end
 n = length(targetTimes);
 timeEstimates = zeros(n,1);
 for i = 1:n
-    %first get a spreading activation curve for these settings
+    %first get a new spreading activation curve for these settings
     [~, thisCurve] = GAMIT_Spreading_Activation(params);
-
     %always start with initial value
     INS = thisCurve(1,:);
-    if prospectiveFlag
-       %random samples
-       if params.PoissonSampling
-           sampleTimes = PoissonSequence(targetTimes(i), params.sampleFrequency);
-       else %uniform sampling
-           %how often are we sampling?
-           nProspectiveSamples = floor(targetTimes(i) / params.sampleFrequency);
-           sampleTimes = sort(ceil(targetTimes(i)*rand(1, nProspectiveSamples)));
+    if reproduceFlag
+       %interval reproduction task
+       %basically our model check it's watch at random intervals until it's
+       %estimate is greater than or equal to the target time. At which
+       %point it stops. we then return the actual amount of elapsed time to
+       %get to this point.
+       % as a first step, generate far more saccades than we might actually
+       % need 
+       %(targetinterval * 3) should be big enough!
+       sampleTimes = getRandomSampleTimes(3*targetTimes(i),params.PoissonSampling,params.sampleFrequency);
+       
+       INS = [INS; thisCurve(sampleTimes,:)]; %inputs to the neural network are curve values at these times
+       OUTPUTS = srn_out(INS, wt1, wt2); %outputs are network estimates
+       %now have to convert these outputs to actual numerical values
+       allEstimates = LinearRepresentation(OUTPUTS,20,1,params.nIterations,true);  
+       %Finally find the first estimate greater than the target
+       ix = find(allEstimates>targetTimes(i),1);
+       %the actual estimate is the 'real' time that produced this estimate
+       timeEstimates(i) = sampleTimes(ix);  
+    else
+       %standard recognition task.
+       if prospectiveFlag
+           %/ - estimating length of a presented interval
+           %sample the curve at randomly selected points during the interval and
+           %then give a final estimate when we reach the actual target time
+           sampleTimes = getRandomSampleTimes(targetTimes(i),params.PoissonSampling,params.sampleFrequency);
+           INS = [INS; thisCurve(sampleTimes,:)]; 
        end
-       INS = [INS; thisCurve(sampleTimes,:)];
-    end        
-    %end on targetTime
-    INS = [INS;thisCurve(round(targetTimes(i)),:)];
-    %  INS = thisCurve(round(targetTimes(i)),:);    
-    OUTPUTS = srn_out(INS, wt1, wt2);
-    [r,~]=size(OUTPUTS);
-    timeEstimates(i) = LinearRepresentation(OUTPUTS(r,:),20,1,params.nIterations,true);  
+        %end on targetTime
+        INS = [INS;thisCurve(round(targetTimes(i)),:)];
+        %  INS = thisCurve(round(targetTimes(i)),:);    
+        OUTPUTS = srn_out(INS, wt1, wt2);
+        [r,~]=size(OUTPUTS);
+        timeEstimates(i) = LinearRepresentation(OUTPUTS(r,:),20,1,params.nIterations,true);  
+    end
 end
 
-    
+end
 
+function sampleTimes = getRandomSampleTimes(targetTime,PoissonFlag,sampleFrequency)
+% helper function to return the attentional saccades
+    if PoissonFlag
+       %get poisson distributed random samples
+       sampleTimes = PoissonSequence(targetTime, sampleFrequency);
+   else %uniformly random sampling
+       %how often are we sampling?
+       nProspectiveSamples = floor(targetTime / sampleFrequency);
+       sampleTimes = sort(ceil(targetTime*rand(1, nProspectiveSamples)));
+    end
+end

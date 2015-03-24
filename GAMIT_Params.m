@@ -17,7 +17,7 @@ else
     params.beta = 0.14952;          % spreading activation
     params.noiseFactor = 0.00025;  % noise
 
-    params.GaussianFit = 1;      %is gamit score the stddev of the best fit gaussian 
+    params.GaussianFit = 0;      %is gamit score the stddev of the best fit gaussian 
                                      %or is it SummedActivation + MaxActivation?
 
     %curve sampling params
@@ -26,8 +26,8 @@ else
     params.MemoryUncertainty = 0; %is there any additional uncertainty when we read off from the lifetime Curve?
 
     %prospective model parameters
-    params.WorkingMemoryDelta = 0; %Do we just a subset of sampling deltas or all of them?
-    params.RandomAccessMemory = 0; %If WMD=true, is the subset random or just the most recent deltas
+    params.WorkingMemoryDelta = 1; %Do we just a subset of sampling deltas or all of them?
+    params.RandomAccessMemory = 1; %If WMD=true, is the subset random or just the most recent deltas
     params.nSampleDeltas = 6;       % how many samples can we keep in memory?
 
     params.sampleFrequency = 100;    % base rate of one sample every fifty ticks

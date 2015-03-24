@@ -11,7 +11,7 @@ if nargin<2
 end
 if nargin<3
     lowCognitiveLoad = 0.95;
-    highCognitiveLoad = 1.05;
+    highCognitiveLoad = 1.1;
 end 
 if nargin<5 
     showGraphics = true;
@@ -36,8 +36,10 @@ prospectiveLow = GAMIT(testTimes,lowCognitiveLoad,true,false,params,lifetimeCurv
 prospectiveHigh = GAMIT(testTimes,highCognitiveLoad,true,false,params,lifetimeCurve);
 
 if exportRawData
-    t = table(retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh);
-    writetable(t,'GAMIT_Retro_Pro_Interaction.csv','Delimiter',',');
+%     t = table(retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh);
+%     writetable(t,'GAMIT_Retro_Pro_Interaction.csv','Delimiter',',');
+    tdata=[retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh];
+    csvwrite('GAMIT_Retro_Pro_Interaction.csv',tdata );
     save('GAMIT_Retro_Pro_Params.mat','params');
 end
 

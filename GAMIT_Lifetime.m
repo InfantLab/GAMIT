@@ -81,8 +81,14 @@ if exportRawData
     Score = ReferenceCurve.GamitScore';
     ScoreUncertainty = ReferenceCurve.GamitScoreUncertainty';
     Delta = ReferenceCurve.Delta';
-    t = table(Score,ScoreUncertainty,Delta);
-    writetable(t,'GAMIT_Lifetime.csv','Delimiter',',');
+%     t = table(Score,ScoreUncertainty,Delta);
+%     writetable(t,'GAMIT_Lifetime.csv','Delimiter',',');
+    tdata=[Score, ScoreUncertainty, Delta];
+    csvwrite('GAMIT_Lifetime.csv',tdata );
+%     thead = {'Score', 'ScoreUncertainty', 'Delta'};
+%     t=[thead;mat2cell(tdata)];
+%     xlswrite('GAMIT_Lifetime.xls',thead,'Sheet1' );         %header
+%     xlswrite('GAMIT_Lifetime.xls',tdata,'Sheet1','A2');     %data
     save('GAMIT_Lifetime_Params.mat','params');
 end
 

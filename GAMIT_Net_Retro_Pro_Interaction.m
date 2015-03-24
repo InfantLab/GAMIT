@@ -41,8 +41,10 @@ prospectiveLow = GAMIT_Net(testTimes,lowCognitiveLoad,true,false,params,wt1, wt2
 prospectiveHigh = GAMIT_Net(testTimes,highCognitiveLoad,true,false,params,wt1, wt2);
 
 if exportRawData
-    t = table(retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh);
-    writetable(t,'GAMIT_Retro_Pro_Interaction.csv','Delimiter',',');
+%     t = table(retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh);
+%     writetable(t,'GAMIT_Retro_Pro_Interaction.csv','Delimiter',',');
+    tdata=[retrospectiveLow,retrospectiveHigh,prospectiveLow,prospectiveHigh];
+    csvwrite('GAMIT_Retro_Pro_Interaction.csv',tdata );
     save('GAMIT_Retro_Pro_Params.mat','params');
 end
 
